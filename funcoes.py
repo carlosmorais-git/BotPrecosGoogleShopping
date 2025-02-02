@@ -1,13 +1,10 @@
 
 import pandas as pd
 import tkinter as tk
-from tkinter import filedialog, messagebox,ttk
+from tkinter import  messagebox,ttk
 import webbrowser
-import fitz  # PyMuPDF - # pip install pymupdf
-from PIL import Image, ImageTk
-import re
 
-
+# Bloco Formata Moeda
 def formata_moeda(entry_variavel):
     '''Função que formata o valor digitado no entry como uma moeda (ex: 1234 -> 12,34)'''
     
@@ -67,6 +64,8 @@ def formatar_entry(entry):
     # Quando a variavel e alterada, a funcao formata_moeda e chamada, passando entry_variavel como argumento.
     entry_variavel.trace_add("write", lambda *args: formata_moeda(entry_variavel))
 
+
+# Posiciona Entry e Botoes da tela
 def posicionar_OBJ_tela(valor_x,valor_y,w,h,padding=None):
     '''Configura a posicao da entrada de texto de entry e posicionamento dos botoes'''
     if padding:# Se for entry
@@ -99,38 +98,33 @@ def remove_formatacao_preco(preco):
     # preco = re.sub(r'[^\d,.-]', '', preco)
 
     # Substitui o ponto (separador de milhares) por uma string vazia e ajusta a vírgula como decimal
-    return float(preco.replace('.', '_').replace(',', '.').replace('R$','').replace('_', ''))
+    return float(preco.replace(',', '').replace('R$',''))
 
 ## Converter um arquivo xlsx para HTML
 def exibir_meus_resultados_na_web(tabela_resultados):
    
     try:
         # Verificar se a entrada é um DataFrame ou um caminho para arquivo Excel
-        if type(tabela_resultados) == str:
-            tabela = pd.read_excel(tabela_resultados) # Ler o arquivo Excel
+        
 
-        elif 'DataFrame' in str(type(tabela_resultados)):
+        if 'DataFrame' in str(type(tabela_resultados)):
             tabela = tabela_resultados # Já é um DataFrame
 
-        # try:
-        #     # Tenta aplicar a formatação diretamente
-        #     tabela['Preco'] = tabela['Preco'].apply('R${:,.2f}'.format)
-
-        # except (ValueError, TypeError):
-        #     # Caso a formatação falhe, remove a formatação anterior e reaplica
-        #     tabela['Preco'] = tabela['Preco'].apply(remove_formatacao_preco)
-        #     tabela['Preco'] = tabela['Preco'].apply('R${:,.2f}'.format)
-        
+        else:
+            tabela = pd.read_excel(r'{}'.format(tabela_resultados)) # Ler o arquivo Excel
+                
         tabela['Preco'] = tabela['Preco'].apply(remove_formatacao_preco)
+
         tabela['Preco'] = tabela['Preco'].apply('R${:,.2f}'.format)
 
-
        
-        # Verifica se tenho a coluna Link que nao contem os links ja tratados
+        # Verifica se a coluna "Link" existe
         if "Link" in tabela.columns:
-            # Formata os links da coluna "Link" (excluindo os que já estão como 'Ver Produto')
+            # Formata apenas os links que ainda não estão no formato de link HTML
             tabela['Link'] = tabela['Link'].apply(
-                lambda x: f'<a href="{x}" target="_blank">Ver Produto</a>' if x not in 'Ver Produto' else x)
+                lambda x: f'<a href="{x}" target="_blank">Ver Produto</a>' if isinstance(x, str) and not x.startswith('<a href') else x
+            )
+
 
         # Converter um DataFrame para HTML
         tabela_html = tabela.to_html(index=False, escape=False, border=1)
