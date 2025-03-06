@@ -2,6 +2,8 @@
 
 ### Objetivo: treinar um projeto em que a gente tenha que usar automações web com Selenium para buscar as informações que precisamos
 
+![image](https://github.com/user-attachments/assets/4a13245d-4059-4a34-af0a-c5a5f5efff01)
+
 - Já fizemos um projeto com esse objetivo no Módulo de Python e Web e em gravações de encontros ao vivo, mas não custa nada treinar mais um pouco.
 
 ### Como vai funcionar:
@@ -29,4 +31,4 @@
 
 - Abrir uma tabela online com os itens e preços encontrados, junto com o link de compra.
 
-![image](https://github.com/user-attachments/assets/4a13245d-4059-4a34-af0a-c5a5f5efff01)
+
